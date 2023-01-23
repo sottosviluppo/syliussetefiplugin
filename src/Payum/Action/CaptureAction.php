@@ -4,6 +4,7 @@ namespace Filcronet\SyliusSetefiPlugin\Payum\Action;
 
 use Filcronet\SyliusSetefiPlugin\Payum\SetefiApi;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -84,11 +85,10 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         $response = new \SimpleXMLElement($xmlResponse);
         $paymentId = $response->paymentid;
         $paymentUrl = $response->hostedpageurl;
-
         $securityToken = $response->securitytoken;
 
         $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
-        return new RedirectResponse($setefiPaymentPageUrl);
+        return $response->headers->set("Location: $setefiPaymentPageUrl");
     }
 
     public function supports($request): bool
