@@ -9,7 +9,6 @@ use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
-use SimpleXMLElement;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Payum\Core\Request\Capture;
 
@@ -46,8 +45,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         return $orderAmount/$divideBy;
     }
 
-
-
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
@@ -58,7 +55,9 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         try {
             // Protocollo XML Hosted 3DSecure - Inizializzazione
 
-            $merchantDomain = 'localhost';
+            $merchantDomain = 'http://localhost/'.$this->get('sylius.context.locale')->getLocaleCode().'/order/thank-you';
+
+            dump($merchantDomain);
 
             $setefiPaymentGatewayDomain = $this->api->getEndpoint();
             $terminalId = $this->api->getTerminalId();
@@ -72,7 +71,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
                 'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
                 'language' => 'ITA',
                 'responseToMerchantUrl' => $merchantDomain,
-                'recoveryUrl' => $merchantDomain,
                 'merchantOrderId' => $payment->getOrder()->getId(),
             );
 
@@ -88,7 +86,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
             dd($xmlResponse);
 
-            $response = new SimpleXMLElement($xmlResponse);
+            $response = new \SimpleXMLElement($xmlResponse);
             $paymentId = $response->paymentid;
             $paymentUrl = $response->hostedpageurl;
 
