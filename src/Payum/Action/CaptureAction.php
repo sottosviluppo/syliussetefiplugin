@@ -52,47 +52,43 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         /** @var SyliusPaymentInterface $payment */
         $payment = $request->getModel();
 
-        try {
-            // Protocollo XML Hosted 3DSecure - Inizializzazione
+        // Protocollo XML Hosted 3DSecure - Inizializzazione
 
-            $merchantDomain = 'http://localhost/en_US/order/thank-you';
+        $merchantDomain = 'http://localhost/en_US/order/thank-you';
 
-            $setefiPaymentGatewayDomain = $this->api->getEndpoint();
-            $terminalId = $this->api->getTerminalId();
-            $terminalPassword = $this->api->getTerminalPassword();
+        $setefiPaymentGatewayDomain = $this->api->getEndpoint();
+        $terminalId = $this->api->getTerminalId();
+        $terminalPassword = $this->api->getTerminalPassword();
 
-            $parameters = array(
-                'id' => $terminalId,
-                'password' => $terminalPassword,
-                'operationType' => 'initialize',
-                'amount' => $this->getDivideBy($payment->getAmount()),
-                'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
-                'language' => 'ITA',
-                'responseToMerchantUrl' => $merchantDomain,
-                'merchantOrderId' => $payment->getOrder()->getId(),
-            );
+        $parameters = array(
+            'id' => $terminalId,
+            'password' => $terminalPassword,
+            'operationType' => 'initialize',
+            'amount' => $this->getDivideBy($payment->getAmount()),
+            'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
+            'language' => 'ITA',
+            'responseToMerchantUrl' => $merchantDomain,
+            'merchantOrderId' => $payment->getOrder()->getId(),
+        );
 
-            $curlHandle = curl_init();
-            curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
-            curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curlHandle, CURLOPT_POST, true);
-            curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
-            curl_setopt($curlHandle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
-            $xmlResponse = curl_exec($curlHandle);
-            curl_close($curlHandle);
+        $curlHandle = curl_init();
+        curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
+        curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlHandle, CURLOPT_POST, true);
+        curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
+        curl_setopt($curlHandle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
+        $xmlResponse = curl_exec($curlHandle);
+        curl_close($curlHandle);
 
-            $response = new \SimpleXMLElement($xmlResponse);
-            $paymentId = $response->paymentid;
-            $paymentUrl = $response->hostedpageurl;
+        $response = new \SimpleXMLElement($xmlResponse);
+        $paymentId = $response->paymentid;
+        $paymentUrl = $response->hostedpageurl;
 
-            $securityToken = $response->securitytoken;
+        $securityToken = $response->securitytoken;
 
-            $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
-            header("Location: $setefiPaymentPageUrl");
-        } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-        }
+        $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
+        return $setefiPaymentPageUrl;
     }
 
     public function supports($request): bool
