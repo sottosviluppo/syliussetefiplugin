@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+                               http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="app.setefi_payment" class="Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder">
+            <argument>Filcronet\SyliusSetefiPlugin\Payum\SetefiPaymentGatewayFactory</argument>
+            <tag name="payum.gateway_factory_builder" factory="setefi_payment" />
+        </service>
+
+        <service id="Filcronet\SyliusSetefiPlugin\Form\Type\SetefiGatewayConfigurationType">
+            <tag name="sylius.gateway_configuration_type" type="setefi_payment" label="Setefi Payment" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="Filcronet\SyliusSetefiPlugin\Payum\Action\CaptureAction" public="true">
+            <argument type="service" id="sylius.http_client" />
+            <tag name="payum.action" factory="setefi_payment" alias="payum.action.capture" />
+        </service>
+    </services>
+</container>

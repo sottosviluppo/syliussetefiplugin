@@ -1,0 +1,4 @@
+suites:
+    main:
+        namespace: Filcronet\SyliusSetefiPlugin
+        psr4_prefix: Filcronet\SyliusSetefiPlugin
