@@ -57,8 +57,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
             $merchantDomain = 'http://localhost/en_US/order/thank-you';
 
-            dump($merchantDomain);
-
             $setefiPaymentGatewayDomain = $this->api->getEndpoint();
             $terminalId = $this->api->getTerminalId();
             $terminalPassword = $this->api->getTerminalPassword();
@@ -83,8 +81,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             curl_setopt($curlHandle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
             $xmlResponse = curl_exec($curlHandle);
             curl_close($curlHandle);
-
-            dd($xmlResponse);
 
             $response = new \SimpleXMLElement($xmlResponse);
             $paymentId = $response->paymentid;
