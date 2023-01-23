@@ -85,9 +85,12 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         $response = new \SimpleXMLElement($xmlResponse);
         $paymentId = $response->paymentid;
         $paymentUrl = $response->hostedpageurl;
+
         $securityToken = $response->securitytoken;
 
-        return new RedirectResponse("$paymentUrl?PaymentID=$paymentId");
+        $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
+        dd($setefiPaymentPageUrl);
+        return $setefiPaymentPageUrl;
     }
 
     public function supports($request): bool
