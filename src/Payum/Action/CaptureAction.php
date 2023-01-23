@@ -55,7 +55,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         try {
             // Protocollo XML Hosted 3DSecure - Inizializzazione
 
-            $merchantDomain = 'http://localhost/'.$this->get('sylius.context.locale')->getLocaleCode().'/order/thank-you';
+            $merchantDomain = 'http://localhost/en_US/order/thank-you';
 
             dump($merchantDomain);
 
