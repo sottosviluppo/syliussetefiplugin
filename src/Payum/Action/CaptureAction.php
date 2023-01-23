@@ -76,7 +76,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
                 'merchantOrderId' => $payment->getOrder()->getId(),
             );
 
-            dd($parameters);
             $curlHandle = curl_init();
             curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
             curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
@@ -86,6 +85,8 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             curl_setopt($curlHandle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
             $xmlResponse = curl_exec($curlHandle);
             curl_close($curlHandle);
+
+            dd($xmlResponse);
 
             $response = new SimpleXMLElement($xmlResponse);
             $paymentId = $response->paymentid;
