@@ -46,7 +46,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         return $orderAmount/$divideBy;
     }
 
-    public function execute($request)
+    public function execute($request): string
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
@@ -89,6 +89,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
         $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
         header("Location: $setefiPaymentPageUrl");
+        return $setefiPaymentPageUrl;
     }
 
     public function supports($request): bool
