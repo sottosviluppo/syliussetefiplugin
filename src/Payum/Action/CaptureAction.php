@@ -45,7 +45,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         return $orderAmount/$divideBy;
     }
 
-    public function execute($request): void
+    public function execute($request): string
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
@@ -84,6 +84,8 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         $response = new \SimpleXMLElement($xmlResponse);
         $paymentId = $response->paymentid;
         $paymentUrl = $response->hostedpageurl;
+
+        dd($response);
 
         $securityToken = $response->securitytoken;
 
