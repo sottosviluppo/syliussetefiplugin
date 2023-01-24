@@ -85,7 +85,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         $securityToken = $response->securitytoken;
 
         $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
-        return new RedirectResponse($setefiPaymentPageUrl);
+        return new RedirectResponse($setefiPaymentPageUrl, 302);
     }
 
     public function supports($request): bool
