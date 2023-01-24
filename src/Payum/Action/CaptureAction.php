@@ -85,7 +85,7 @@ final class CaptureAction extends AbstractController implements ActionInterface,
         $securityToken = $response->securitytoken;
 
         $setefiPaymentUrl = "$paymentUrl?PaymentID=$paymentId";
-        return $this->redirect($setefiPaymentUrl, 200);
+        return $this->redirect($setefiPaymentUrl, 302);
     }
 
     public function supports($request): bool
