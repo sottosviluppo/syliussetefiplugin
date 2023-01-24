@@ -11,18 +11,15 @@ use Payum\Core\Exception\UnsupportedApiException;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Payum\Core\Request\Capture;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\RouterInterface;
 
 final class CaptureAction implements ActionInterface, ApiAwareInterface
 {
     private $client;
     private $api;
-    private $router;
 
-    public function __construct(Client $client, RouterInterface $router)
+    public function __construct(Client $client)
     {
         $this->client = $client;
-        $this->router = $router;
     }
 
     public function getCurrencyCode($iso): string
@@ -88,7 +85,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         $securityToken = $response->securitytoken;
 
         $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
-        return new RedirectResponse($this->router->generate($setefiPaymentPageUrl));
+        return new RedirectResponse($setefiPaymentPageUrl);
     }
 
     public function supports($request): bool

@@ -17,7 +17,6 @@
 
         <service id="Filcronet\SyliusSetefiPlugin\Payum\Action\CaptureAction" public="true">
             <argument type="service" id="sylius.http_client" />
-            <argument type="service" id="router.default" />
             <tag name="payum.action" factory="setefi_payment" alias="payum.action.capture" />
         </service>
     </services>
