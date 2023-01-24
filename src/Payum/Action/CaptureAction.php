@@ -4,7 +4,6 @@ namespace Filcronet\SyliusSetefiPlugin\Payum\Action;
 
 use Filcronet\SyliusSetefiPlugin\Payum\SetefiApi;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -26,7 +25,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         $this->router = $router;
     }
 
-    public function getCurrencyCode($iso)
+    public function getCurrencyCode($iso): string
     {
         $codes = array(
             'CHF' => '756',
@@ -41,13 +40,13 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         return $codes[$iso];
     }
 
-    private function getDivideBy($orderAmount)
+    private function getDivideBy($orderAmount): float|int
     {
         $divideBy = 100;
         return $orderAmount/$divideBy;
     }
 
-    public function execute($request)
+    public function execute($request): RedirectResponse
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
