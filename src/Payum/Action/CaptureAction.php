@@ -4,16 +4,16 @@ namespace Filcronet\SyliusSetefiPlugin\Payum\Action;
 
 use Filcronet\SyliusSetefiPlugin\Payum\SetefiApi;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Payum\Core\Request\Capture;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-final class CaptureAction extends AbstractController implements ActionInterface, ApiAwareInterface
+final class CaptureAction implements ActionInterface, ApiAwareInterface
 {
     private $client;
     private $api;
@@ -44,50 +44,57 @@ final class CaptureAction extends AbstractController implements ActionInterface,
         return $orderAmount/$divideBy;
     }
 
-    public function execute($request): RedirectResponse
+    public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
         /** @var SyliusPaymentInterface $payment */
         $payment = $request->getModel();
 
-        // Protocollo XML Hosted 3DSecure - Inizializzazione
+        try {
+            // Protocollo XML Hosted 3DSecure - Inizializzazione
 
-        $merchantDomain = 'http://localhost/en_US/order/thank-you';
+            $merchantDomain = 'http://localhost/en_US/order/thank-you';
 
-        $setefiPaymentGatewayDomain = $this->api->getEndpoint();
-        $terminalId = $this->api->getTerminalId();
-        $terminalPassword = $this->api->getTerminalPassword();
+            $setefiPaymentGatewayDomain = $this->api->getEndpoint();
+            $terminalId = $this->api->getTerminalId();
+            $terminalPassword = $this->api->getTerminalPassword();
 
-        $parameters = array(
-            'id' => $terminalId,
-            'password' => $terminalPassword,
-            'operationType' => 'initialize',
-            'amount' => $this->getDivideBy($payment->getAmount()),
-            'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
-            'language' => 'ITA',
-            'responseToMerchantUrl' => $merchantDomain,
-            'recoveryUrl' => $merchantDomain,
-            'merchantOrderId' => $payment->getOrder()->getId(),
-        );
+            $parameters = array(
+                'id' => $terminalId,
+                'password' => $terminalPassword,
+                'operationType' => 'initialize',
+                'amount' => $this->getDivideBy($payment->getAmount()),
+                'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
+                'language' => 'ITA',
+                'responseToMerchantUrl' => $merchantDomain,
+                'recoveryUrl' => $merchantDomain,
+                'merchantOrderId' => $payment->getOrder()->getId(),
+            );
 
-        $curlHandle = curl_init();
-        curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
-        curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlHandle, CURLOPT_POST, true);
-        curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
-        curl_setopt($curlHandle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
-        $xmlResponse = curl_exec($curlHandle);
-        curl_close($curlHandle);
+            $curlHandle = curl_init();
+            curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
+            curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curlHandle, CURLOPT_POST, true);
+            curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
+            curl_setopt($curlHandle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
+            $xmlResponse = curl_exec($curlHandle);
+            curl_close($curlHandle);
 
-        $response = new \SimpleXMLElement($xmlResponse);
-        $paymentId = $response->paymentid;
-        $paymentUrl = $response->hostedpageurl;
-        $securityToken = $response->securitytoken;
+            $response = new \SimpleXMLElement($xmlResponse);
+            dd($response);
+            $paymentId = $response->paymentid;
+            $paymentUrl = $response->hostedpageurl;
+            $securityToken = $response->securitytoken;
 
-        $setefiPaymentUrl = "$paymentUrl?PaymentID=$paymentId";
-        return new RedirectResponse($setefiPaymentUrl);
+            $setefiPaymentUrl = "$paymentUrl?PaymentID=$paymentId";
+            new RedirectResponse($setefiPaymentUrl);
+        } catch (RequestException $exception){
+            $response = $exception->getResponse();
+        } finally {
+            $payment->setDetails(['status' => $response->getStatusCode()]);
+        }
     }
 
     public function supports($request): bool
