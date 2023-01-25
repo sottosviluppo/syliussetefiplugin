@@ -19,6 +19,7 @@ final class StatusAction implements ActionInterface
 
         $details = $payment->getDetails();
 
+        dd($details);
         if (200 === $details['status']) {
             $request->markCaptured();
 
