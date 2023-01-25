@@ -11,9 +11,10 @@ use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Payum\Core\Request\Capture;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-final class CaptureAction implements ActionInterface, ApiAwareInterface
+final class CaptureAction extends AbstractController implements ActionInterface, ApiAwareInterface
 {
     private $client;
     private $api;
@@ -88,15 +89,11 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             $securityToken = $response->securitytoken;
 
             $setefiPaymentUrl = "$paymentUrl?PaymentID=$paymentId";
-            new RedirectResponse($setefiPaymentUrl);
+            $this->redirect($setefiPaymentUrl);
         } catch (RequestException $exception){
             $response = $exception->getResponse();
         } finally {
-            if ($paymentId && $paymentUrl && $securityToken){
-                $payment->setDetails(['status' => 200]);
-            } else {
-                $payment->setDetails(['status' => 400]);
-            }
+            $payment->setDetails(['status' => $response->getStatusCode()]);
         }
     }
 
