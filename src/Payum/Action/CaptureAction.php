@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Filcronet\SyliusSetefiPlugin\Payum\Action;
 
 use Filcronet\SyliusSetefiPlugin\Payum\SetefiApi;
