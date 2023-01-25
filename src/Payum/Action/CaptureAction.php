@@ -83,6 +83,7 @@ final class CaptureAction extends AbstractController implements ActionInterface,
             curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
             curl_setopt($curlHandle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
             $xmlResponse = curl_exec($curlHandle);
+            dd($xmlResponse);
             curl_close($curlHandle);
 
             $response = new \SimpleXMLElement($xmlResponse);
