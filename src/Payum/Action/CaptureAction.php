@@ -47,7 +47,7 @@ final class CaptureAction extends AbstractController implements ActionInterface,
         return $orderAmount/$divideBy;
     }
 
-    public function execute($request): void
+    public function execute($request): RedirectResponse
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
@@ -90,7 +90,7 @@ final class CaptureAction extends AbstractController implements ActionInterface,
         $securityToken = $response->securitytoken;
 
         $setefiPaymentUrl = "$paymentUrl?PaymentID=$paymentId";
-        $this->redirect($setefiPaymentUrl);
+        return $this->redirect($setefiPaymentUrl);
     }
 
     public function supports($request): bool
