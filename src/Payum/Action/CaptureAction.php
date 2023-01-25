@@ -83,7 +83,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             curl_close($curlHandle);
 
             $response = new \SimpleXMLElement($xmlResponse);
-            dd($response);
             $paymentId = $response->paymentid;
             $paymentUrl = $response->hostedpageurl;
             $securityToken = $response->securitytoken;
@@ -93,7 +92,11 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         } catch (RequestException $exception){
             $response = $exception->getResponse();
         } finally {
-            $payment->setDetails(['status' => $response->getStatusCode()]);
+            if ($paymentId && $paymentUrl && $securityToken){
+                $payment->setDetails(['status' => 200]);
+            } else {
+                $payment->setDetails(['status' => 400]);
+            }
         }
     }
 
