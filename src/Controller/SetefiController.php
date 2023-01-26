@@ -12,6 +12,7 @@ class SetefiController extends AbstractController
     public function resultPayment(): Response
     {
         $paymentId = $_POST['paymentid'];
+        dd($_POST);
         $data=["message"=>$paymentId];
         return new JsonResponse($data);
     }
