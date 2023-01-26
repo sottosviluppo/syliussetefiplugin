@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/FilcronetSyliusSetefiPlugin.iml" filepath="$PROJECT_DIR$/.idea/FilcronetSyliusSetefiPlugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../syliusTest/.idea/syliusTest.iml" filepath="$PROJECT_DIR$/../../syliusTest/.idea/syliusTest.iml" />
     </modules>
   </component>
 </project>
