@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Filcronet\SyliusSetefiPlugin\Payum\Action;
 
-use Filcronet\SyliusSetefiPlugin\Exception\HttpGetRedirect;
 use Filcronet\SyliusSetefiPlugin\Payum\SetefiApi;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -15,7 +13,6 @@ use Payum\Core\Exception\UnsupportedApiException;
 use Payum\Core\Reply\HttpRedirect;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Payum\Core\Request\Capture;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 final class CaptureAction implements ActionInterface, ApiAwareInterface
 {
@@ -90,10 +87,10 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         $paymentUrl = $response->hostedpageurl;
         $securityToken = $response->securitytoken;
 
-        $payment->setDetails(['response' => $response]);
+        /*$payment->setDetails(['response' => $response]);*/
 
         $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
-        throw new HttpGetRedirect($setefiPaymentPageUrl);
+        throw new HttpRedirect($setefiPaymentPageUrl);
     }
 
     public function supports($request): bool
