@@ -13,15 +13,23 @@ use Payum\Core\Exception\UnsupportedApiException;
 use Payum\Core\Reply\HttpRedirect;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Payum\Core\Request\Capture;
+use Sylius\Component\Locale\Context\LocaleContextInterface;
 
-final class CaptureAction implements ActionInterface, ApiAwareInterface
+final class CaptureAction implements ActionInterface, ApiAwareInterface, LocaleContextInterface
 {
     private $client;
     private $api;
+    private $locale;
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, string $locale)
     {
         $this->client = $client;
+        $this->locale = $locale;
+    }
+
+    public function getLocaleCode(): string
+    {
+        return $this->locale;
     }
 
     public function getCurrencyCode($iso): string
@@ -71,7 +79,8 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         /** @var SyliusPaymentInterface $payment */
         $payment = $request->getModel();
 
-        dd($payment->getDetails());
+        dump($this->locale);
+        dd($payment);
 
         // Protocollo XML Hosted 3DSecure - Inizializzazione
 
