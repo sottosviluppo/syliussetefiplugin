@@ -80,7 +80,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, LocaleC
         $payment = $request->getModel();
 
         dump($this->locale);
-        dd($payment);
+        dd($payment->getDetails());
 
         // Protocollo XML Hosted 3DSecure - Inizializzazione
 
