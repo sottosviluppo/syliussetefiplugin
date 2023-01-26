@@ -39,6 +39,25 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         return $codes[$iso];
     }
 
+    public function getLanguageCode($language): string
+    {
+        $codes = array(
+            'it_IT' => 'ITA',
+            'en_US' => 'USA',
+            'en_GB' => 'USA',
+            'es_ES' => 'SPA',
+            'fr_FR' => 'FRA',
+            'de_DE' => 'DEU',
+            'ru_RU' => 'RUS',
+            'pt_PT' => 'POR',
+        );
+
+        if (!array_key_exists($language, $codes)) {
+            return 'ITA';
+        }
+        return $codes[$language];
+    }
+
     private function getDivideBy($orderAmount): float|int
     {
         $divideBy = 100;
@@ -51,6 +70,8 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
         /** @var SyliusPaymentInterface $payment */
         $payment = $request->getModel();
+
+        dd($payment->getDetails());
 
         // Protocollo XML Hosted 3DSecure - Inizializzazione
 
@@ -66,7 +87,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             'operationType' => 'initialize',
             'amount' => $this->getDivideBy($payment->getAmount()),
             'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
-            'language' => 'ITA',
+            'language' => $this->getLanguageCode($payment->getDetails()),
             'responseToMerchantUrl' => $merchantDomain,
             'recoveryUrl' => $merchantDomain,
             'merchantOrderId' => $payment->getOrder()->getId(),
@@ -86,8 +107,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         $paymentId = $response->paymentid;
         $paymentUrl = $response->hostedpageurl;
         $securityToken = $response->securitytoken;
-
-        /*$payment->setDetails(['response' => $response]);*/
 
         $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
         throw new HttpRedirect($setefiPaymentPageUrl);
