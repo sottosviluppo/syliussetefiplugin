@@ -13,16 +13,18 @@ use Payum\Core\Exception\UnsupportedApiException;
 use Payum\Core\Reply\HttpRedirect;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Payum\Core\Request\Capture;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 final class CaptureAction implements ActionInterface, ApiAwareInterface
 {
     private $client;
     private $api;
+    private $rs;
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, RequestStack $rs)
     {
         $this->client = $client;
+        $this->rs = $rs;
     }
 
     public function getLocaleCode($locale): string
@@ -65,7 +67,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         return $orderAmount/$divideBy;
     }
 
-    public function execute(Request $request2, $request): void
+    public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
@@ -74,7 +76,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
         // Protocollo XML Hosted 3DSecure - Inizializzazione
 
-        dump($request2);
         dd($request);
         $merchantDomain = $request->getSchemeAndHttpHost().'/'.$request->getLocale().'/setefi/result/payment';
 
