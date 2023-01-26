@@ -1,0 +1,6 @@
+services:
+  setefi.controller:
+    class: Filcronet\SyliusSetefiPlugin\Controller\SetefiController
+    autowire: false
+    public: true
+    tags: ['controller.service_arguments']

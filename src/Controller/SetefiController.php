@@ -9,10 +9,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SetefiController extends AbstractController
 {
-    #[Route('setefi/result/payment', name: 'setefi_result_payment', methods: ['POST'])]
     public function resultPayment(): Response
     {
-
         $data=["message"=>"OK"];
         return new JsonResponse($data);
     }
