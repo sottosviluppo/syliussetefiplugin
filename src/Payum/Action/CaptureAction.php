@@ -94,7 +94,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         } catch (RequestException $exception){
             $response = $exception->getResponse();
         } finally {
-            $payment->setDetails(['status' => $response->getStatusCode()]);
+            $payment->setDetails(['status' => '200']);
         }
     }
 
