@@ -24,6 +24,25 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         $this->client = $client;
     }
 
+    public function getLocaleCode($locale): string
+    {
+        $codes = array(
+            'it_IT' => 'ITA',
+            'en_US' => 'USA',
+            'en_GB' => 'USA',
+            'fr_FR' => 'FRA',
+            'de_DE' => 'DEU',
+            'ru_RU' => 'RUS',
+            'es_ES' => 'SPA',
+            'pt_PT' => 'POR'
+        );
+
+        if (!array_key_exists($locale, $codes)) {
+            return 'ITA';
+        }
+        return $codes[$locale];
+    }
+
     public function getCurrencyCode($iso): string
     {
         $codes = array(
@@ -54,7 +73,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
         // Protocollo XML Hosted 3DSecure - Inizializzazione
 
-        $merchantDomain = 'http://localhost/en_US/setefi/result/payment';
+        $merchantDomain = $request->getSchemeAndHttpHost().'/'.$request->getLocale().'/setefi/result/payment';
 
         $setefiPaymentGatewayDomain = $this->api->getEndpoint();
         $terminalId = $this->api->getTerminalId();
@@ -66,9 +85,8 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             'operationType' => 'initialize',
             'amount' => $this->getDivideBy($payment->getAmount()),
             'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
-            'language' => 'ITA',
+            'language' => $this->getLocaleCode($request->getLocale()),
             'responseToMerchantUrl' => $merchantDomain,
-            'recoveryUrl' => $merchantDomain,
             'merchantOrderId' => $payment->getOrder()->getId(),
         );
 
