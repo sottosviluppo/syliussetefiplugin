@@ -13,6 +13,7 @@ use Payum\Core\Exception\UnsupportedApiException;
 use Payum\Core\Reply\HttpRedirect;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Payum\Core\Request\Capture;
+use Symfony\Component\HttpFoundation\Request;
 
 final class CaptureAction implements ActionInterface, ApiAwareInterface
 {
@@ -64,7 +65,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         return $orderAmount/$divideBy;
     }
 
-    public function execute($request): void
+    public function execute(Request $request2, $request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
@@ -73,6 +74,8 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
         // Protocollo XML Hosted 3DSecure - Inizializzazione
 
+        dump($request2);
+        dd($request);
         $merchantDomain = $request->getSchemeAndHttpHost().'/'.$request->getLocale().'/setefi/result/payment';
 
         $setefiPaymentGatewayDomain = $this->api->getEndpoint();
