@@ -16,7 +16,7 @@ final class StatusAction implements ActionInterface
 
         /** @var SyliusPaymentInterface $payment */
         $payment = $request->getFirstModel();
-        $payment->setDetails(['status' => '200']);
+
         $details = $payment->getDetails();
 
         if (200 === $details['status']) {
