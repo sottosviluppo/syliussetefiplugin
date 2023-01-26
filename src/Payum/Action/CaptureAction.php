@@ -6,7 +6,6 @@ namespace Filcronet\SyliusSetefiPlugin\Payum\Action;
 
 use Filcronet\SyliusSetefiPlugin\Payum\SetefiApi;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -55,47 +54,41 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
         // Protocollo XML Hosted 3DSecure - Inizializzazione
 
-        try {
-            $merchantDomain = 'http://localhost/en_US/order/thank-you';
+        $merchantDomain = 'http://localhost/en_US/order/thank-you';
 
-            $setefiPaymentGatewayDomain = $this->api->getEndpoint();
-            $terminalId = $this->api->getTerminalId();
-            $terminalPassword = $this->api->getTerminalPassword();
+        $setefiPaymentGatewayDomain = $this->api->getEndpoint();
+        $terminalId = $this->api->getTerminalId();
+        $terminalPassword = $this->api->getTerminalPassword();
 
-            $parameters = array(
-                'id' => $terminalId,
-                'password' => $terminalPassword,
-                'operationType' => 'initialize',
-                'amount' => $this->getDivideBy($payment->getAmount()),
-                'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
-                'language' => 'ITA',
-                'responseToMerchantUrl' => $merchantDomain,
-                'recoveryUrl' => $merchantDomain,
-                'merchantOrderId' => $payment->getOrder()->getId(),
-            );
+        $parameters = array(
+            'id' => $terminalId,
+            'password' => $terminalPassword,
+            'operationType' => 'initialize',
+            'amount' => $this->getDivideBy($payment->getAmount()),
+            'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
+            'language' => 'ITA',
+            'responseToMerchantUrl' => $merchantDomain,
+            'recoveryUrl' => $merchantDomain,
+            'merchantOrderId' => $payment->getOrder()->getId(),
+        );
 
-            $curlHandle = curl_init();
-            curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
-            curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curlHandle, CURLOPT_POST, true);
-            curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
-            curl_setopt($curlHandle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
-            $xmlResponse = curl_exec($curlHandle);
-            curl_close($curlHandle);
+        $curlHandle = curl_init();
+        curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
+        curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlHandle, CURLOPT_POST, true);
+        curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
+        curl_setopt($curlHandle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
+        $xmlResponse = curl_exec($curlHandle);
+        curl_close($curlHandle);
 
-            $response = new \SimpleXMLElement($xmlResponse);
-            $paymentId = $response->paymentid;
-            $paymentUrl = $response->hostedpageurl;
-            $securityToken = $response->securitytoken;
+        $response = new \SimpleXMLElement($xmlResponse);
+        $paymentId = $response->paymentid;
+        $paymentUrl = $response->hostedpageurl;
+        $securityToken = $response->securitytoken;
 
-            $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
-            throw new HttpRedirect($setefiPaymentPageUrl);
-        } catch (RequestException $exception){
-            $response = $exception->getResponse();
-        } finally {
-            $payment->setDetails(['status' => '200']);
-        }
+        $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
+        throw new HttpRedirect($setefiPaymentPageUrl);
     }
 
     public function supports($request): bool
