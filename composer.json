@@ -1,5 +1,5 @@
 {
-    "name": "filcronet/sylius-setefi-plugin",
+    "name": "sottosviluppo/syliussetefiplugin",
     "type": "sylius-plugin",
     "description": "Setefi payment method plugin",
     "keywords": ["sylius","sylius-plugin","setefi","payment"],
