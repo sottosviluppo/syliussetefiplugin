@@ -1,5 +1,5 @@
 setefi_result_payment:
   path: /{_locale}/setefi/result/payment
-  methods: [POST]
+  methods: [GET]
   defaults:
     _controller: setefi.controller::resultPayment
