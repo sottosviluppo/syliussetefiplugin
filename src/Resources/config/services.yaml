@@ -1,7 +1,7 @@
 services:
   app.sylius_payment:
     class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
-    arguments: [ Filcronet\SyliusSetefiPlugin\Payum\SyliusPaymentGatewayFactory ]
+    arguments: [ Filcronet\SyliusSetefiPlugin\Payum\SetefiPaymentGatewayFactory ]
     tags:
       - { name: payum.gateway_factory_builder, factory: setefi_payment }
 
