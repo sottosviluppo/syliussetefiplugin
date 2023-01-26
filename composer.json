@@ -42,16 +42,7 @@
         "symfony/web-profiler-bundle": "^5.4 || ^6.0",
         "vimeo/psalm": "4.27.0"
     },
-    "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": false,
-            "phpstan/extension-installer": true,
-            "symfony/flex": true
-        }
-    },
-    "extra": {
-    },
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Filcronet\\SyliusSetefiPlugin\\": "src/",
@@ -63,8 +54,14 @@
             "tests/Application/Kernel.php"
         ]
     },
-    "prefer-stable": true,
-    "minimum-stability": "dev",
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": false,
+            "phpstan/extension-installer": true,
+            "symfony/flex": true
+        }
+    },
     "scripts": {
         "post-install-cmd": [
             "php bin/create_node_symlink.php"
