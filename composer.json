@@ -63,6 +63,8 @@
             "tests/Application/Kernel.php"
         ]
     },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
     "scripts": {
         "post-install-cmd": [
             "php bin/create_node_symlink.php"
