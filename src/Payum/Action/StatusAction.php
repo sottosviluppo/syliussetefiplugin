@@ -8,6 +8,7 @@ use Payum\Core\Action\ActionInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Request\GetStatusInterface;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
+
 final class StatusAction implements ActionInterface
 {
     public function execute($request): void
@@ -16,10 +17,8 @@ final class StatusAction implements ActionInterface
 
         /** @var SyliusPaymentInterface $payment */
         $payment = $request->getFirstModel();
-        $details = $payment->getDetails();
 
-        dump($payment);
-        dd($details);
+        $details = $payment->getDetails();
 
         if (200 === $details['status']) {
             $request->markCaptured();

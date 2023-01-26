@@ -1,0 +1,5 @@
+services:
+  sylius.controller.shop.order:
+    class: Filcronet\SyliusSetefiPlugin\Controller\OrderController
+    autowire: true
+    tags: ['controller.service_arguments']
