@@ -1,4 +1,22 @@
 services:
+  app.sylius_payment:
+    class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
+    arguments: [ Filcronet\SyliusSetefiPlugin\Payum\SyliusPaymentGatewayFactory ]
+    tags:
+      - { name: payum.gateway_factory_builder, factory: setefi_payment }
+
+  Filcronet\SyliusSetefiPlugin\Form\Type\SetefiGatewayConfigurationType:
+    tags:
+      - { name: sylius.gateway_configuration_type, type: setefi_payment, label: 'Setefi Payment' }
+      - { name: form.type }
+
+  Filcronet\SyliusSetefiPlugin\Payum\Action\CaptureAction:
+    public: true
+    arguments:
+      - '@sylius.http_client'
+    tags:
+      - { name: payum.action, factory: setefi_payment, alias: payum.action.capture }
+
   setefi.controller:
     class: Filcronet\SyliusSetefiPlugin\Controller\SetefiController
     autowire: false

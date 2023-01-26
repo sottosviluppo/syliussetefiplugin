@@ -20,7 +20,7 @@ final class FilcronetSyliusSetefiExtension extends Extension
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
 
-        $loader->load('services.xml');
+        $loader->load('services.yaml');
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container): ConfigurationInterface
