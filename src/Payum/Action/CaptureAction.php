@@ -75,9 +75,10 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         $payment = $request->getModel();
 
         // Protocollo XML Hosted 3DSecure - Inizializzazione
-        dump($this->rs->getMainRequest()->getLocale());
-        dd($this->rs->getCurrentRequest()->getLocale());
+        dump($this->rs->getMainRequest());
+        dump($this->rs->getCurrentRequest());
         $merchantDomain = $this->rs->getMainRequest()->getSchemeAndHttpHost().'/'.$this->rs->getMainRequest()->getLocale().'/setefi/result/payment';
+        dd($merchantDomain);
 
         $setefiPaymentGatewayDomain = $this->api->getEndpoint();
         $terminalId = $this->api->getTerminalId();
