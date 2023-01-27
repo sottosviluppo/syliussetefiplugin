@@ -92,8 +92,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             'merchantOrderId' => $payment->getOrder()->getId(),
         );
 
-        dd($parameters);
-
         $curlHandle = curl_init();
         curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
         curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
