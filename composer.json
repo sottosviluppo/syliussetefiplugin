@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0",
-        "sylius/sylius": "v1.11.9",
+        "sylius/sylius": "^v1.11.4",
         "sylius/mailer-bundle":  "^1.8 || ^2.0@beta",
         "symfony/webpack-encore-bundle": "^1.15",
         "ext-curl": "*",
