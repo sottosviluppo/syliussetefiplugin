@@ -92,6 +92,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
             'language' => $this->getLocaleCode($this->rs->getMainRequest()->getLocale()),
             'responseToMerchantUrl' => 'https://brescianinieco.dev.filcronet.it/it_IT/setefi/result/payment',
+            'recoveryUrl' => 'https://brescianinieco.dev.filcronet.it/it_IT/setefi/result/payment',
             'merchantOrderId' => $payment->getOrder()->getId(),
         );
 
