@@ -95,8 +95,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             'merchantOrderId' => $payment->getOrder()->getId(),
         );
 
-        $fp = fopen('/srv/sylius/public/errorlog.txt', 'w');
-
         $curlHandle = curl_init();
         curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
         curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
@@ -104,12 +102,10 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         curl_setopt($curlHandle, CURLOPT_POST, true);
         curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
         curl_setopt($curlHandle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
-        curl_setopt($curlHandle, CURLOPT_VERBOSE, true);
-        curl_setopt($curlHandle, CURLOPT_STDERR, $fp);
         $xmlResponse = curl_exec($curlHandle);
         curl_close($curlHandle);
 
-        $this->logger->critical('Capture action curl request', [
+        $this->logger->info('captureaction_filcronet', [
             'params' => $parameters,
             'curl_info' => curl_getinfo($curlHandle),
         ]);
