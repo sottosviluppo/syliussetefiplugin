@@ -95,7 +95,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             'merchantOrderId' => $payment->getOrder()->getId(),
         );
 
-        $fp = fopen(dirname(__FILE__).'/errorlog.txt', 'w');
+        $fp = fopen('/srv/sylius/public/errorlog.txt', 'w');
 
         $curlHandle = curl_init();
         curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
