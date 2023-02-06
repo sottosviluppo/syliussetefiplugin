@@ -19,7 +19,7 @@ final class SetefiPaymentGatewayFactory extends GatewayFactory
         ]);
 
         $config['payum.api'] = function (ArrayObject $config) {
-            return new SetefiApi($config['endpoint'], $config['terminalId'], $config['terminalPassword']);
+            return new SetefiApi($config['endpoint'], $config['apiKey']);
         };
     }
 }
