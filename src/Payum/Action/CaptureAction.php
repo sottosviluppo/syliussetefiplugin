@@ -94,7 +94,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
                 "recurrence" =>array(
                     "action" =>"NO_RECURRING",
                 ),
-                "captureType" =>"EXPLICIT",
                 "exemptions" =>"NO_PREFERENCE",
                 'language' => $this->getLocaleCode($this->rs->getMainRequest()->getLocale()),
                 "resultUrl"=>$merchantDomain,
