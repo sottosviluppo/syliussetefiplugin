@@ -80,6 +80,8 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         // Protocollo XML Hosted 3DSecure - Inizializzazione
         $merchantDomain = $this->rs->getMainRequest()->getSchemeAndHttpHost().'/'.$this->rs->getMainRequest()->getLocale().'/setefi/result/payment';
 
+        dd($merchantDomain);
+
         $setefiPaymentGatewayDomain = $this->api->getEndpoint();
         $terminalId = $this->api->getTerminalId();
         $terminalPassword = $this->api->getTerminalPassword();
@@ -92,7 +94,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             'amount' => $this->getDivideBy($payment->getAmount()),
             'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
             'language' => $this->getLocaleCode($this->rs->getMainRequest()->getLocale()),
-            'responseToMerchantUrl' => $merchantDomain,
+            'responseToMerchantUrl' => 'https://brescianinieco.dev.filcronet.it/it_IT/setefi/result/paymen',
             'merchantOrderId' => $payment->getOrder()->getId(),
         );
 
