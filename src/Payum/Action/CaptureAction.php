@@ -135,9 +135,9 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        if ($http_code != 200) {
+        /*if ($http_code != 200) {
             die("invalid http status code: ".print_r($http_code, true));
-        }
+        }*/
 
         curl_close($ch);
 
