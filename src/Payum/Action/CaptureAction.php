@@ -49,12 +49,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         return $codes[$locale];
     }
 
-    private function getDivideBy($orderAmount): float|int
-    {
-        $divideBy = 100;
-        return $orderAmount/$divideBy;
-    }
-
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
@@ -70,12 +64,12 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         $requestBodyData = array(
             "order" => array(
                 "orderId"=>$payment->getOrder()->getId(),
-                "amount"=>$this->getDivideBy($payment->getAmount()),
+                "amount"=>$payment->getAmount(),
                 "currency"=>$payment->getCurrencyCode(),
             ),
             "paymentSession" => array(
                 "actionType"=>"PAY",
-                "amount"=>$this->getDivideBy($payment->getAmount()),
+                "amount"=>$payment->getAmount(),
                 "recurrence" =>array(
                     "action" =>"NO_RECURRING",
                 ),
