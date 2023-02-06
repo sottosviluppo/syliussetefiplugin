@@ -11,6 +11,7 @@ use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
 use Payum\Core\Reply\HttpRedirect;
+use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Payum\Core\Request\Capture;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -20,11 +21,13 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
     private $api;
     private $rs;
     private $client;
+    private $logger;
 
-    public function __construct(Client $client, RequestStack $rs)
+    public function __construct(Client $client, RequestStack $rs, LoggerInterface $logger)
     {
         $this->client = $client;
         $this->rs = $rs;
+        $this->logger = $logger;
     }
 
     public function getLocaleCode($locale): string
@@ -101,6 +104,12 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
         $xmlResponse = curl_exec($curlHandle);
         curl_close($curlHandle);
+
+        $this->logger->info('filcronet_curl_setefi', [
+            "params" => $parameters,
+            "handle" => $curlHandle,
+            "response" => $xmlResponse
+        ]);
 
         $response = new \SimpleXMLElement($xmlResponse);
         $paymentId = $response->paymentid;

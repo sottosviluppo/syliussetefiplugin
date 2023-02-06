@@ -15,6 +15,7 @@ services:
     arguments:
       - '@sylius.http_client'
       - '@request_stack'
+      - '@monolog.logger'
     tags:
       - { name: payum.action, factory: setefi_payment, alias: payum.action.capture }
 
