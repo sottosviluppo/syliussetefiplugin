@@ -133,6 +133,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
+        dump($requestBodyData);
         dump($headers);
         dump($http_code);
         dd(json_decode($resultJson));
