@@ -11,23 +11,20 @@ use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
 use Payum\Core\Reply\HttpRedirect;
-use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Payum\Core\Request\Capture;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 final class CaptureAction implements ActionInterface, ApiAwareInterface
 {
-    private $client;
     private $api;
     private $rs;
-    private $logger;
+    private $client;
 
-    public function __construct(Client $client, RequestStack $rs, LoggerInterface $logger)
+    public function __construct(Client $client, RequestStack $rs)
     {
         $this->client = $client;
         $this->rs = $rs;
-        $this->logger = $logger;
     }
 
     public function getLocaleCode($locale): string
@@ -87,12 +84,12 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         $parameters = array(
             'id' => $terminalId,
             'password' => $terminalPassword,
+            'tenantId' => '20',
             'operationType' => 'initialize',
             'amount' => $this->getDivideBy($payment->getAmount()),
             'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
             'language' => $this->getLocaleCode($this->rs->getMainRequest()->getLocale()),
-            'responseToMerchantUrl' => 'https://brescianinieco.dev.filcronet.it/it_IT/setefi/result/payment',
-            'recoveryUrl' => 'https://brescianinieco.dev.filcronet.it/it_IT/setefi/result/payment',
+            'responseToMerchantUrl' => $merchantDomain,
             'merchantOrderId' => $payment->getOrder()->getId(),
         );
 
@@ -102,14 +99,8 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curlHandle, CURLOPT_POST, true);
         curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
-        curl_setopt($curlHandle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
         $xmlResponse = curl_exec($curlHandle);
         curl_close($curlHandle);
-
-        $this->logger->info('captureaction_filcronet', [
-            'params' => $parameters,
-            'curl_info' => curl_getinfo($curlHandle),
-        ]);
 
         $response = new \SimpleXMLElement($xmlResponse);
         $paymentId = $response->paymentid;
