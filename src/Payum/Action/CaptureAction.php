@@ -79,7 +79,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
         // Protocollo XML Hosted 3DSecure - Inizializzazione
         $merchantDomain = $this->rs->getMainRequest()->getSchemeAndHttpHost().'/'.$this->rs->getMainRequest()->getLocale().'/setefi/result/payment';
-
         $apiUrl = $this->api->getEndpoint();
         $apiKey = $this->api->getApiKey();
 
@@ -134,6 +133,10 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         }
 
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        dump($headers);
+        dump($resultJson);
+        dd($http_code);
 
         if ($http_code != 200) {
             die("invalid http status code: ".print_r($http_code, true));
