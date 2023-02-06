@@ -135,6 +135,10 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
+        dump($headers);
+        dump(json_decode($resultJson));
+        dd($http_code);
+
         if ($http_code != 200) {
             die("invalid http status code: ".print_r($http_code, true));
         }
@@ -142,8 +146,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         curl_close($ch);
 
         $resultData = json_decode($resultJson);
-
-        dd($resultData);
 
         echo "Hosted Page: " . $resultData->hostedPage . "\n";
         echo "Security Token: " . $resultData->securityToken . "\n";
