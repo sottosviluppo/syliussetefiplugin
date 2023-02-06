@@ -72,57 +72,52 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
 
     public function execute($request): void
     {
+        RequestNotSupportedException::assertSupports($this, $request);
 
-        try {
-            RequestNotSupportedException::assertSupports($this, $request);
+        /** @var SyliusPaymentInterface $payment */
+        $payment = $request->getModel();
 
-            /** @var SyliusPaymentInterface $payment */
-            $payment = $request->getModel();
+        // Protocollo XML Hosted 3DSecure - Inizializzazione
+        $merchantDomain = $this->rs->getMainRequest()->getSchemeAndHttpHost().'/'.$this->rs->getMainRequest()->getLocale().'/setefi/result/payment';
 
-            // Protocollo XML Hosted 3DSecure - Inizializzazione
-            $merchantDomain = $this->rs->getMainRequest()->getSchemeAndHttpHost().'/'.$this->rs->getMainRequest()->getLocale().'/setefi/result/payment';
+        $setefiPaymentGatewayDomain = $this->api->getEndpoint();
+        $terminalId = $this->api->getTerminalId();
+        $terminalPassword = $this->api->getTerminalPassword();
 
-            $setefiPaymentGatewayDomain = $this->api->getEndpoint();
-            $terminalId = $this->api->getTerminalId();
-            $terminalPassword = $this->api->getTerminalPassword();
+        $parameters = array(
+            'id' => $terminalId,
+            'password' => $terminalPassword,
+            'tenantId' => '20',
+            'operationType' => 'initialize',
+            'amount' => $this->getDivideBy($payment->getAmount()),
+            'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
+            'language' => $this->getLocaleCode($this->rs->getMainRequest()->getLocale()),
+            'responseToMerchantUrl' => $merchantDomain,
+            'merchantOrderId' => $payment->getOrder()->getId(),
+        );
 
-            $parameters = array(
-                'id' => $terminalId,
-                'password' => $terminalPassword,
-                'tenantId' => '20',
-                'operationType' => 'initialize',
-                'amount' => $this->getDivideBy($payment->getAmount()),
-                'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
-                'language' => $this->getLocaleCode($this->rs->getMainRequest()->getLocale()),
-                'responseToMerchantUrl' => $merchantDomain,
-                'merchantOrderId' => $payment->getOrder()->getId(),
-            );
+        $curlHandle = curl_init();
+        curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
+        curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlHandle, CURLOPT_POST, true);
+        curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
+        $xmlResponse = curl_exec($curlHandle);
+        curl_close($curlHandle);
 
-            $curlHandle = curl_init();
-            curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
-            curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curlHandle, CURLOPT_POST, true);
-            curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
-            $xmlResponse = curl_exec($curlHandle);
-            curl_close($curlHandle);
+        $this->logger->info('filcronet_curl_setefi', [
+            "params" => $parameters,
+            "handle" => $curlHandle,
+            "response" => $xmlResponse
+        ]);
 
-            $this->logger->info('filcronet_curl_setefi', [
-                "params" => $parameters,
-                "handle" => $curlHandle,
-                "response" => $xmlResponse
-            ]);
+        $response = new \SimpleXMLElement($xmlResponse);
+        $paymentId = $response->paymentid;
+        $paymentUrl = $response->hostedpageurl;
+        $securityToken = $response->securitytoken;
 
-            $response = new \SimpleXMLElement($xmlResponse);
-            $paymentId = $response->paymentid;
-            $paymentUrl = $response->hostedpageurl;
-            $securityToken = $response->securitytoken;
-
-            $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
-            throw new HttpRedirect($setefiPaymentPageUrl);
-        } catch (\Exception $e) {
-            $this->logger->critical('filcronet_curl_setefi: '.$e->getMessage());
-        }
+        $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
+        throw new HttpRedirect($setefiPaymentPageUrl);
     }
 
     public function supports($request): bool
