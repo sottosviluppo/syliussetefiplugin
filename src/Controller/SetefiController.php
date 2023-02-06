@@ -3,17 +3,13 @@
 namespace Filcronet\SyliusSetefiPlugin\Controller;
 
 use Filcronet\SyliusSetefiPlugin\Payum\SetefiApi;
+use Payum\Core\Exception\UnsupportedApiException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SetefiController extends AbstractController
 {
     private $api;
-
-    public function __construct(SetefiApi $api)
-    {
-        $this->api = $api;
-    }
 
     public function resultPayment()
     {
@@ -58,5 +54,14 @@ class SetefiController extends AbstractController
         $resultData = json_decode($resultJson);
 
         return new JsonResponse($resultData);
+    }
+
+    public function setApi($api): void
+    {
+        if (!$api instanceof SetefiApi) {
+            throw new UnsupportedApiException('Not supported. Expected an instance of ' . SetefiApi::class);
+        }
+
+        $this->api = $api;
     }
 }
