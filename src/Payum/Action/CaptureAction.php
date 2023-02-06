@@ -92,7 +92,8 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             'amount' => $this->getDivideBy($payment->getAmount()),
             'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
             'language' => $this->getLocaleCode($this->rs->getMainRequest()->getLocale()),
-            'responseToMerchantUrl' => $merchantDomain,
+            'resultUrl ' => $merchantDomain,
+            'recoveryUrl ' => $merchantDomain,
             'merchantOrderId' => $payment->getOrder()->getId(),
         );
 
