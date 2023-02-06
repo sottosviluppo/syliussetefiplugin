@@ -49,21 +49,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         return $codes[$locale];
     }
 
-    public function getCurrencyCode($iso): string
-    {
-        $codes = array(
-            'CHF' => '756',
-            'EUR' => '978',
-            'GBP' => '826',
-            'USD' => '840',
-        );
-
-        if (!array_key_exists($iso, $codes)) {
-            return '978';
-        }
-        return $codes[$iso];
-    }
-
     private function getDivideBy($orderAmount): float|int
     {
         $divideBy = 100;
@@ -86,7 +71,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             "order" => array(
                 "orderId"=>$payment->getOrder()->getId(),
                 "amount"=>$this->getDivideBy($payment->getAmount()),
-                "currency"=>$this->getCurrencyCode($payment->getCurrencyCode()),
+                "currency"=>$payment->getCurrencyCode(),
             ),
             "paymentSession" => array(
                 "actionType"=>"PAY",
