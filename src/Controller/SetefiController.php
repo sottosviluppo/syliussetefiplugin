@@ -13,8 +13,8 @@ class SetefiController extends AbstractController
 
     public function resultPayment()
     {
-        $apiUrl = $this->api->getEndpoint();
-        $apiKey = $this->api->getApiKey();
+        $apiUrl = 'https://stg-ta.nexigroup.com/api/phoenix-0.0/psp/api/v1';
+        $apiKey = '5d952446-9004-4023-9eae-a527a152846b';
 
         $rawCorrelationId = bin2hex(openssl_random_pseudo_bytes(16));
 
@@ -54,14 +54,5 @@ class SetefiController extends AbstractController
         $resultData = json_decode($resultJson);
 
         return new JsonResponse($resultData);
-    }
-
-    public function setApi($api): void
-    {
-        if (!$api instanceof SetefiApi) {
-            throw new UnsupportedApiException('Not supported. Expected an instance of ' . SetefiApi::class);
-        }
-
-        $this->api = $api;
     }
 }
