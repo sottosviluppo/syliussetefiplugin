@@ -121,9 +121,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
             $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
             throw new HttpRedirect($setefiPaymentPageUrl);
         } catch (\Exception $e) {
-            $this->logger->critical('filcronet_curl_setefi', [
-                "message" => $e->getMessage(),
-            ]);
+            $this->logger->critical('filcronet_curl_setefi: '.$e->getMessage());
         }
     }
 
