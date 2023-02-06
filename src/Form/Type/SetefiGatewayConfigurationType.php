@@ -13,7 +13,6 @@ final class SetefiGatewayConfigurationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('endpoint', TextType::class);
-        $builder->add('terminalId', TextType::class);
-        $builder->add('terminalPassword', TextType::class);
+        $builder->add('apiKey', TextType::class);
     }
 }

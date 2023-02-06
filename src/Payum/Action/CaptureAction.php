@@ -80,45 +80,71 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         // Protocollo XML Hosted 3DSecure - Inizializzazione
         $merchantDomain = $this->rs->getMainRequest()->getSchemeAndHttpHost().'/'.$this->rs->getMainRequest()->getLocale().'/setefi/result/payment';
 
-        $setefiPaymentGatewayDomain = $this->api->getEndpoint();
-        $terminalId = $this->api->getTerminalId();
-        $terminalPassword = $this->api->getTerminalPassword();
+        $apiUrl = $this->api->getEndpoint();
+        $apiKey = $this->api->getApiKey();
 
-        $parameters = array(
-            'id' => $terminalId,
-            'password' => $terminalPassword,
-            'tenantId' => '20',
-            'operationType' => 'initialize',
-            'amount' => $this->getDivideBy($payment->getAmount()),
-            'currencyCode' => $this->getCurrencyCode($payment->getCurrencyCode()),
-            'language' => $this->getLocaleCode($this->rs->getMainRequest()->getLocale()),
-            'responseToMerchantUrl' => $merchantDomain,
-            'resultUrl ' => $merchantDomain,
-            'recoveryUrl ' => $merchantDomain,
-            'merchantOrderId' => $payment->getOrder()->getId(),
+        $requestBodyData = array(
+            "order" => array(
+                "orderId"=>$payment->getOrder()->getId(),
+                "amount"=>$this->getDivideBy($payment->getAmount()),
+                "currency"=>$this->getCurrencyCode($payment->getCurrencyCode()),
+            ),
+            "paymentSession" => array(
+                "actionType"=>"PAY",
+                "amount"=>$this->getDivideBy($payment->getAmount()),
+                "recurrence" =>array(
+                    "action" =>"NO_RECURRING",
+                ),
+                "captureType" =>"EXPLICIT",
+                "exemptions" =>"NO_PREFERENCE",
+                'language' => $this->getLocaleCode($this->rs->getMainRequest()->getLocale()),
+                "resultUrl"=>$merchantDomain,
+                "cancelUrl"=>$merchantDomain,
+                "notificationUrl"=>$merchantDomain,
+            ),
         );
 
-        $curlHandle = curl_init();
-        curl_setopt($curlHandle, CURLOPT_URL, $setefiPaymentGatewayDomain);
-        curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlHandle, CURLOPT_POST, true);
-        curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
-        $xmlResponse = curl_exec($curlHandle);
-        curl_close($curlHandle);
+        $rawCorrelationId = bin2hex(openssl_random_pseudo_bytes(16));
 
-        $this->logger->info('filcronet_curl_setefi', [
-            "params" => $parameters,
-            "handle" => $curlHandle,
-            "response" => $xmlResponse
-        ]);
+        $correlationId =  substr($rawCorrelationId, 0, 8);
+        $correlationId .= "-";
+        $correlationId .=  substr($rawCorrelationId, 8, 4);
+        $correlationId .= "-";
+        $correlationId .=  substr($rawCorrelationId, 12, 4);
+        $correlationId .= "-";
+        $correlationId .=  substr($rawCorrelationId, 16, 4);
+        $correlationId .= "-";
+        $correlationId .=  substr($rawCorrelationId, 20);
 
-        $response = new \SimpleXMLElement($xmlResponse);
-        $paymentId = $response->paymentid;
-        $paymentUrl = $response->hostedpageurl;
-        $securityToken = $response->securitytoken;
+        $headers = array(
+            "X-Api-Key: " . $apiKey,
+            "Content-Type: application/json",
+            "Correlation-Id: " . $correlationId,
+        );
 
-        $setefiPaymentPageUrl = "$paymentUrl?PaymentID=$paymentId";
+        $ch = curl_init($apiUrl ."/orders/hpp");
+        $payload = json_encode($requestBodyData);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $resultJson = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            die("curl error: " . curl_error($ch));
+        }
+
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if ($http_code != 200) {
+            die("invalid http status code: ".print_r($http_code, true));
+        }
+
+        curl_close($ch);
+
+        $resultData = json_decode($resultJson);
+
+        $setefiPaymentPageUrl = $resultData->hostedPage;
+
         throw new HttpRedirect($setefiPaymentPageUrl);
     }
 

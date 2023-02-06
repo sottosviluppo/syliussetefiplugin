@@ -10,7 +10,8 @@
         "sylius/mailer-bundle":  "^1.8 || ^2.0@beta",
         "symfony/webpack-encore-bundle": "^1.15",
         "ext-curl": "*",
-        "ext-simplexml": "*"
+        "ext-simplexml": "*",
+        "ext-openssl": "*"
     },
     "require-dev": {
         "behat/behat": "^3.6.1",

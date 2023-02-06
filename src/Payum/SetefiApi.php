@@ -6,29 +6,19 @@ namespace Filcronet\SyliusSetefiPlugin\Payum;
 
 final class SetefiApi
 {
-    /** @var string */
-    private $terminalId;
-    /** @var string */
-    private $terminalPassword;
-    /** @var string */
+    private $apiKey;
     private $endpoint;
 
-    public function __construct(string $endpoint, string $terminalId, string $terminalPassword)
+    public function __construct(string $endpoint, string $apiKey)
     {
-        $this->terminalId = $terminalId;
-        $this->terminalPassword = $terminalPassword;
+        $this->apiKey = $apiKey;
         $this->endpoint = $endpoint;
 
     }
 
-    public function getTerminalId(): string
+    public function getApiKey(): string
     {
-        return $this->terminalId;
-    }
-
-    public function getTerminalPassword(): string
-    {
-        return $this->terminalPassword;
+        return $this->apiKey;
     }
 
     public function getEndpoint(): string
