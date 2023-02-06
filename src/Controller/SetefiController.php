@@ -3,18 +3,28 @@
 namespace Filcronet\SyliusSetefiPlugin\Controller;
 
 use Filcronet\SyliusSetefiPlugin\Payum\SetefiApi;
+use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\UnsupportedApiException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
-class SetefiController extends AbstractController
+class SetefiController extends AbstractController implements ApiAwareInterface
 {
     private $api;
 
-    public function resultPayment()
+    public function resultPayment(Request $request)
     {
-        $apiUrl = 'https://stg-ta.nexigroup.com/api/phoenix-0.0/psp/api/v1';
-        $apiKey = '5d952446-9004-4023-9eae-a527a152846b';
+
+        $response = $request->request->all();
+        $responseGet = $request->query->all();
+        $content = json_decode($request->getContent());
+
+        dump($response);
+        dump($responseGet);
+        dd($content);
+        /*$apiUrl = $this->api->getEndpoint();
+        $apiKey = $this->api->getApiKey();
 
         $rawCorrelationId = bin2hex(openssl_random_pseudo_bytes(16));
 
@@ -51,8 +61,17 @@ class SetefiController extends AbstractController
 
         curl_close($ch);
 
-        $resultData = json_decode($resultJson);
+        $resultData = json_decode($resultJson);*/
 
-        return new JsonResponse($resultData);
+        return new JsonResponse($content);
+    }
+
+    public function setApi($api): void
+    {
+        if (!$api instanceof SetefiApi) {
+            throw new UnsupportedApiException('Not supported. Expected an instance of ' . SetefiApi::class);
+        }
+
+        $this->api = $api;
     }
 }
