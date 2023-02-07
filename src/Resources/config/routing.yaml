@@ -1,4 +1,4 @@
 setefi_result_payment:
-  path: /{_locale}/setefi/result/payment
+  path: /{_locale}/setefi/result/payment/{orderId}
   defaults:
     _controller: setefi.controller::resultPayment
