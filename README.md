@@ -30,6 +30,13 @@ The plugin is now installed and ready to use.
 
 1. Login into the Admin panel.
 2. Go to payment methods and add the new method named XPay.
-3. Insert your XPay API endpoint and your XPay API key.
-4. Fill the rest of the fields and save the payment method.
-5. Your E-commerce can now use the XPay Payment Gateway to recive payments.
+3. Insert your XPay API endpoint
+
+    ```bash
+    Test url: https://stg-ta.nexigroup.com/api/phoenix-0.0/psp/api/v1
+    Production url: https://xpay.nexigroup.com/api/phoenix-0.0/psp/api/v1
+    ```
+    
+4. Insert XPay API key.
+5. Fill the rest of the fields and save the payment method.
+6. Your E-commerce can now use the XPay Payment Gateway to recive payments.
