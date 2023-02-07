@@ -24,3 +24,6 @@ services:
     autowire: true
     public: true
     tags: ['controller.service_arguments']
+
+  Filcronet\SyliusSetefiPlugin\Services\SetefiManager:
+    arguments:
