@@ -19,7 +19,7 @@ services:
       - '@sylius.http_client'
       - '@request_stack'
       - '@monolog.logger'
-      - 'Filcronet\SyliusSetefiPlugin\Services\SetefiManager'
+      - Filcronet\SyliusSetefiPlugin\Services\SetefiManager
     tags:
       - { name: payum.action, factory: setefi_payment, alias: payum.action.capture }
 
