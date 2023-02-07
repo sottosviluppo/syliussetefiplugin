@@ -24,8 +24,10 @@ class SetefiController extends AbstractController
         $paymentId = $request->query->get('paymentId');
 
         $payment = $this->container->get('sylius.repository.payment')->findOneBy(['order' => $orderId]);
-        $details = $payment->getDetails();
+        $method = $payment->getMethod();
+        $details = $payment->getMethod()->getGatewayConfig()->getConfig();
 
+        dump($method);
         dump($payment);
         dd($details);
 
