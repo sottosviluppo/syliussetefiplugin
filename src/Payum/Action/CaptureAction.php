@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Filcronet\SyliusSetefiPlugin\Payum\Action;
 
 use Filcronet\SyliusSetefiPlugin\Payum\SetefiApi;
+use Filcronet\SyliusSetefiPlugin\Services\SetefiManager;
 use GuzzleHttp\Client;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
@@ -22,12 +23,14 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
     private $rs;
     private $client;
     private $logger;
+    private $sm;
 
-    public function __construct(Client $client, RequestStack $rs, LoggerInterface $logger)
+    public function __construct(Client $client, RequestStack $rs, LoggerInterface $logger, SetefiManager $sm)
     {
         $this->client = $client;
         $this->rs = $rs;
         $this->logger = $logger;
+        $this->sm = $sm;
     }
 
     public function getLocaleCode($locale): string
@@ -80,23 +83,10 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
                 "notificationUrl"=>$merchantDomain,
             ),
         );
-
-        $rawCorrelationId = bin2hex(openssl_random_pseudo_bytes(16));
-
-        $correlationId =  substr($rawCorrelationId, 0, 8);
-        $correlationId .= "-";
-        $correlationId .=  substr($rawCorrelationId, 8, 4);
-        $correlationId .= "-";
-        $correlationId .=  substr($rawCorrelationId, 12, 4);
-        $correlationId .= "-";
-        $correlationId .=  substr($rawCorrelationId, 16, 4);
-        $correlationId .= "-";
-        $correlationId .=  substr($rawCorrelationId, 20);
-
         $headers = array(
             "X-Api-Key: " . $apiKey,
             "Content-Type: application/json",
-            "Correlation-Id: " . $correlationId,
+            "Correlation-Id: " . $this->sm->generateCorralationId(),
         );
 
         $ch = curl_init($apiUrl ."/orders/hpp");

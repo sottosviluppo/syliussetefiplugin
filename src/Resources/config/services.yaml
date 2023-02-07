@@ -16,6 +16,7 @@ services:
       - '@sylius.http_client'
       - '@request_stack'
       - '@monolog.logger'
+      - '@setefi.manager'
     tags:
       - { name: payum.action, factory: setefi_payment, alias: payum.action.capture }
 
@@ -25,5 +26,6 @@ services:
     public: true
     tags: ['controller.service_arguments']
 
-  Filcronet\SyliusSetefiPlugin\Services\SetefiManager:
+  setefi.manager:
+    class: 'Filcronet\SyliusSetefiPlugin\Services\SetefiManager'
     arguments:

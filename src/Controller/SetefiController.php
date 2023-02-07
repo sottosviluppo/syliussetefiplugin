@@ -61,7 +61,6 @@ class SetefiController extends AbstractController
                     $payment->setState(PaymentInterface::STATE_COMPLETED);
                     $payment->getOrder()->setPaymentState(OrderPaymentStates::STATE_PAID);
                     $payment->setDetails(['paymentId' => $lastOperation['operationId'], 'operationType' => $lastOperation['operationType'], 'operationResult' => $lastOperation['operationResult']]);
-
                 } else {
                     //$payment->setState(PaymentInterface::STATE_FAILED);
                     $payment->setDetails(['paymentId' => $lastOperation['operationId'], 'operationType' => $lastOperation['operationType'], 'operationResult' => $lastOperation['operationResult']]);
