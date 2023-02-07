@@ -61,7 +61,7 @@ class SetefiController extends AbstractController
 
         curl_close($ch);
 
-        $resultData = json_decode($resultJson);
+        $resultData = json_decode($resultJson, true);
 
         return new JsonResponse($resultData);
     }
