@@ -15,10 +15,15 @@ class SetefiController extends AbstractController implements ApiAwareInterface
 
     public function resultPayment(Request $request)
     {
-        $uri = $request->getUri();
 
-        dd($uri);
-        $apiUrl = $this->api->getEndpoint();
+        $response = $request->request->all();
+        $responseGet = $request->query->all();
+        $content = json_decode($request->getContent());
+
+        dump($response);
+        dump($responseGet);
+        dd($content);
+        /*$apiUrl = $this->api->getEndpoint();
         $apiKey = $this->api->getApiKey();
 
         $rawCorrelationId = bin2hex(openssl_random_pseudo_bytes(16));
@@ -56,9 +61,9 @@ class SetefiController extends AbstractController implements ApiAwareInterface
 
         curl_close($ch);
 
-        $resultData = json_decode($resultJson);
+        $resultData = json_decode($resultJson);*/
 
-        return new JsonResponse($resultData);
+        return new JsonResponse($content);
     }
 
     public function setApi($api): void
