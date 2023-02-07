@@ -15,15 +15,10 @@ class SetefiController extends AbstractController implements ApiAwareInterface
 
     public function resultPayment(Request $request)
     {
+        $orderId = $request->query->get('orderId');
+        $paymentId = $request->query->get('paymentId');
 
-        $response = $request->request->all();
-        $responseGet = $request->query->all();
-        $content = json_decode($request->getContent());
-
-        dump($response);
-        dump($responseGet);
-        dd($content);
-        /*$apiUrl = $this->api->getEndpoint();
+        $apiUrl = $this->api->getEndpoint();
         $apiKey = $this->api->getApiKey();
 
         $rawCorrelationId = bin2hex(openssl_random_pseudo_bytes(16));
@@ -44,7 +39,7 @@ class SetefiController extends AbstractController implements ApiAwareInterface
             "Correlation-Id: " . $correlationId,
         );
 
-        $ch = curl_init($apiUrl ."/orders/24");
+        $ch = curl_init($apiUrl ."/orders/".$orderId);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $resultJson = curl_exec($ch);
@@ -61,9 +56,9 @@ class SetefiController extends AbstractController implements ApiAwareInterface
 
         curl_close($ch);
 
-        $resultData = json_decode($resultJson);*/
+        $resultData = json_decode($resultJson);
 
-        return new JsonResponse($content);
+        return new JsonResponse($resultData);
     }
 
     public function setApi($api): void
