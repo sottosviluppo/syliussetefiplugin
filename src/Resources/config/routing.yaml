@@ -1,4 +1,4 @@
 setefi_result_payment:
   path: /{_locale}/setefi/result/payment
   defaults:
-    _controller: Filcronet\SyliusSetefiPlugin\Controller\SetefiController::resultPayment
+    _controller: setefi.controller::resultPayment

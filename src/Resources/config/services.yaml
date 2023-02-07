@@ -19,8 +19,8 @@ services:
     tags:
       - { name: payum.action, factory: setefi_payment, alias: payum.action.capture }
 
-  #setefi.controller:
-  #  class: Filcronet\SyliusSetefiPlugin\Controller\SetefiController
+  setefi.controller:
+    class: Filcronet\SyliusSetefiPlugin\Controller\SetefiController
   #  autowire: true
-  #  public: true
-  #  tags: ['controller.service_arguments']
+    public: true
+    tags: ['controller.service_arguments']
