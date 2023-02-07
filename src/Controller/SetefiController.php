@@ -29,7 +29,7 @@ class SetefiController extends AbstractController
 
         dump($method);
         dump($payment);
-        dd($details);
+        dd($details['apiKey']);
 
         $rawCorrelationId = bin2hex(openssl_random_pseudo_bytes(16));
 
