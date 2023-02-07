@@ -2,6 +2,7 @@
 
 namespace Filcronet\SyliusSetefiPlugin\Controller;
 
+use Filcronet\SyliusSetefiPlugin\Payum\Action\CaptureAction;
 use Filcronet\SyliusSetefiPlugin\Payum\SetefiApi;
 use Filcronet\SyliusSetefiPlugin\Payum\SetefiPaymentGatewayFactory;
 use Payum\Core\ApiAwareInterface;
@@ -14,9 +15,9 @@ class SetefiController extends AbstractController
 {
     private $api;
 
-    public function __construct(SetefiPaymentGatewayFactory $pf)
+    public function __construct(CaptureAction $ca)
     {
-        dd($pf);
+        dd($ca);
     }
 
     public function resultPayment(Request $request)
