@@ -1,6 +1,6 @@
 services:
-  setefi.manager:
-    class: Filcronet\SyliusSetefiPlugin\Services\SetefiManager
+  Filcronet\SyliusSetefiPlugin\Services\SetefiManager:
+    arguments:
 
   app.sylius_payment:
     class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
@@ -19,7 +19,7 @@ services:
       - '@sylius.http_client'
       - '@request_stack'
       - '@monolog.logger'
-      - '@setefi.manager'
+      - 'Filcronet\SyliusSetefiPlugin\Services\SetefiManager'
     tags:
       - { name: payum.action, factory: setefi_payment, alias: payum.action.capture }
 
