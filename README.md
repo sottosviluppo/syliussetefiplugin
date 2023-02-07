@@ -6,7 +6,7 @@
 
 <h1 align="center">Sylius XPay Plugin</h1>
 
-<p align="center">Plugin to execute payments via the XPay payment gateway via the Hosted Payment Page modality.</p>
+<p align="center">Plugin to execute payments through the XPay payment gateway via the Hosted Payment Page modality.</p>
 
 ## Documentation
 
