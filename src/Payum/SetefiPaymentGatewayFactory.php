@@ -14,7 +14,7 @@ final class SetefiPaymentGatewayFactory extends GatewayFactory
     {
         $config->defaults([
             'payum.factory_name' => 'setefi_payment',
-            'payum.factory_title' => 'Setefi Payment',
+            'payum.factory_title' => 'XPay Gateway',
             'payum.action.status' => new StatusAction(),
         ]);
 

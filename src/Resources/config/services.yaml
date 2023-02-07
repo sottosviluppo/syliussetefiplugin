@@ -10,7 +10,7 @@ services:
 
   Filcronet\SyliusSetefiPlugin\Form\Type\SetefiGatewayConfigurationType:
     tags:
-      - { name: sylius.gateway_configuration_type, type: setefi_payment, label: 'Setefi Payment' }
+      - { name: sylius.gateway_configuration_type, type: setefi_payment, label: 'XPay Gateway' }
       - { name: form.type }
 
   Filcronet\SyliusSetefiPlugin\Payum\Action\CaptureAction:
