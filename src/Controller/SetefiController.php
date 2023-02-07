@@ -21,7 +21,7 @@ class SetefiController extends AbstractController
     public function resultPayment(Request $request)
     {
         $orderId = $request->query->get('orderId');
-        $paymentId = $request->query->get('paymentId');
+        $paymentId = $request->query->get('paymentid');
 
         $payment = $this->container->get('sylius.repository.payment')->findOneBy(['order' => $orderId]);
         $gatewayConfig = $payment->getMethod()->getGatewayConfig()->getConfig();
@@ -69,10 +69,10 @@ class SetefiController extends AbstractController
         if ($result['result']=='OK'){
             $payment->setState(PaymentInterface::STATE_COMPLETED);
             $payment->getOrder()->setPaymentState(OrderPaymentStates::STATE_PAID);
-            $payment->setDetails(['paymentId' => $paymentId, 'operationType' => $lastOperation['operationType'], 'operationResult' => $lastOperation['operationResult']]);
+            $payment->setDetails(['paymentId' => $lastOperation['operationId'], 'operationType' => $lastOperation['operationType'], 'operationResult' => $lastOperation['operationResult']]);
         } else {
             $payment->setState(PaymentInterface::STATE_FAILED);
-            $payment->setDetails(['paymentId' => $paymentId, 'operationType' => $lastOperation['operationType'], 'operationResult' => $lastOperation['operationResult']]);
+            $payment->setDetails(['paymentId' => $lastOperation['operationId'], 'operationType' => $lastOperation['operationType'], 'operationResult' => $lastOperation['operationResult']]);
         }
 
         $manager = $this->container->get('sylius.manager.payment');
