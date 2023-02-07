@@ -2,16 +2,14 @@
 
 namespace Filcronet\SyliusSetefiPlugin\Controller;
 
-use Filcronet\SyliusSetefiPlugin\Payum\Action\CaptureAction;
 use Filcronet\SyliusSetefiPlugin\Payum\SetefiApi;
-use Filcronet\SyliusSetefiPlugin\Payum\SetefiPaymentGatewayFactory;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\UnsupportedApiException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class SetefiController extends AbstractController implements ApiAwareInterface
+class SetefiController extends AbstractController
 {
     private $api;
 
@@ -22,11 +20,14 @@ class SetefiController extends AbstractController implements ApiAwareInterface
 
     public function resultPayment(Request $request)
     {
-        $apiUrl = $this->api->getEndpoint();
-        $apiKey = $this->api->getApiKey();
-
         $orderId = $request->query->get('orderId');
         $paymentId = $request->query->get('paymentId');
+
+        $payment = $this->container->get('sylius.repository.payment')->findOneBy(['id' => $orderId]);
+        $details = $payment->getDetails();
+
+        dump($payment);
+        dd($details);
 
         $rawCorrelationId = bin2hex(openssl_random_pseudo_bytes(16));
 
@@ -66,14 +67,5 @@ class SetefiController extends AbstractController implements ApiAwareInterface
         $resultData = json_decode($resultJson);
 
         return new JsonResponse($resultData);
-    }
-
-    public function setApi($api): void
-    {
-        if (!$api instanceof SetefiApi) {
-            throw new UnsupportedApiException('Not supported. Expected an instance of ' . SetefiApi::class);
-        }
-
-        $this->api = $api;
     }
 }
