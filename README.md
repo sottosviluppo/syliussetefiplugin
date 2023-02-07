@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://sylius.com" target="_blank">
+    <a href="https://filcronet.it" target="_blank">
         <img src="https://www.filcronet.it/theme/filcronet/img/filcronet-logo.svg"  alt="filcronet_logo"/>
     </a>
 </p>
