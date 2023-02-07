@@ -44,7 +44,7 @@ class SetefiController extends AbstractController
             "Correlation-Id: " . $correlationId,
         );
 
-        $ch = curl_init($gatewayConfig['apiEndpoint'] ."/orders/".$orderId);
+        $ch = curl_init($gatewayConfig['endpoint'] ."/orders/".$orderId);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $resultJson = curl_exec($ch);
