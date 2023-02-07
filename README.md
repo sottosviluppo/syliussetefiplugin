@@ -15,7 +15,7 @@ there you will find the <a href="https://developer.nexigroup.com/en/servizio-eco
 
 ## Quickstart Installation
 
-1. Run `composer require sottosviluppo/sylius-setefi-plugin`.
+1. Run `composer require sottosviluppo/syliussetefiplugin`.
 
 2. In <b>config/routes.yaml</b> add the following lines:
 
