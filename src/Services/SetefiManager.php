@@ -18,4 +18,20 @@ class SetefiManager
         }
         return $result;
     }
+
+    public function generateCorralationId(){
+        $rawCorrelationId = bin2hex(openssl_random_pseudo_bytes(16));
+
+        $correlationId =  substr($rawCorrelationId, 0, 8);
+        $correlationId .= "-";
+        $correlationId .=  substr($rawCorrelationId, 8, 4);
+        $correlationId .= "-";
+        $correlationId .=  substr($rawCorrelationId, 12, 4);
+        $correlationId .= "-";
+        $correlationId .=  substr($rawCorrelationId, 16, 4);
+        $correlationId .= "-";
+        $correlationId .=  substr($rawCorrelationId, 20);
+
+        return $correlationId;
+    }
 }
