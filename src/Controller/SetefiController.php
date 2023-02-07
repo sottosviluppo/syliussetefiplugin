@@ -2,21 +2,21 @@
 
 namespace Filcronet\SyliusSetefiPlugin\Controller;
 
-use Filcronet\SyliusSetefiPlugin\Payum\SetefiApi;
-use Payum\Core\ApiAwareInterface;
-use Payum\Core\Exception\UnsupportedApiException;
+use Filcronet\SyliusSetefiPlugin\Services\SetefiManager;
+use Sylius\Component\Core\OrderPaymentStates;
+use Sylius\Component\Payment\Model\PaymentInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class SetefiController extends AbstractController
 {
-    private $api;
+    private $sm;
 
-    /*public function __construct(CaptureAction $ca)
+    public function __construct(SetefiManager $sm)
     {
-        dd($ca);
-    }*/
+        $this->sm = $sm;
+    }
 
     public function resultPayment(Request $request)
     {
@@ -62,6 +62,22 @@ class SetefiController extends AbstractController
         curl_close($ch);
 
         $resultData = json_decode($resultJson, true);
+        $lastOperation = end($resultData['operations']);
+
+        $result = $this->sm->checkPayment($paymentId, $lastOperation);
+
+        if ($result['result']=='OK'){
+            $payment->setState(PaymentInterface::STATE_COMPLETED);
+            $payment->getOrder()->setPaymentState(OrderPaymentStates::STATE_PAID);
+            $payment->setDetails(['paymentId' => $paymentId, 'operationType' => $lastOperation['operationType'], 'operationResult' => $lastOperation['operationResult']]);
+        } else {
+            $payment->setState(PaymentInterface::STATE_FAILED);
+            $payment->setDetails(['paymentId' => $paymentId, 'operationType' => $lastOperation['operationType'], 'operationResult' => $lastOperation['operationResult']]);
+        }
+
+        $manager = $this->container->get('sylius.manager.payment');
+        $manager->persist($payment);
+        $manager->flush();
 
         return new JsonResponse($resultData);
     }
