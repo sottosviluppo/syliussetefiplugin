@@ -1,4 +1,7 @@
 services:
+  setefi.manager:
+    class: Filcronet\SyliusSetefiPlugin\Services\SetefiManager
+
   app.sylius_payment:
     class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
     arguments: [ Filcronet\SyliusSetefiPlugin\Payum\SetefiPaymentGatewayFactory ]
@@ -25,6 +28,3 @@ services:
     autowire: true
     public: true
     tags: ['controller.service_arguments']
-
-  setefi.manager:
-    class: Filcronet\SyliusSetefiPlugin\Services\SetefiManager
