@@ -71,7 +71,6 @@ class SetefiController extends AbstractController
             }
         }
 
-        return $this->redirect($this->generateUrl('sylius_shop_order_thank_you', array('resultPayment' => $resultPayment, 'orderId' => $orderId)));
-        //return new JsonResponse($resultData);
+        return $this->redirect($this->generateUrl('sylius_shop_order_thank_you'));
     }
 }
