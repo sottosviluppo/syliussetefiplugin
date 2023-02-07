@@ -24,12 +24,7 @@ class SetefiController extends AbstractController
         $paymentId = $request->query->get('paymentId');
 
         $payment = $this->container->get('sylius.repository.payment')->findOneBy(['order' => $orderId]);
-        $method = $payment->getMethod();
-        $details = $payment->getMethod()->getGatewayConfig()->getConfig();
-
-        dump($method);
-        dump($payment);
-        dd($details['apiKey']);
+        $gatewayConfig = $payment->getMethod()->getGatewayConfig()->getConfig();
 
         $rawCorrelationId = bin2hex(openssl_random_pseudo_bytes(16));
 
@@ -44,12 +39,12 @@ class SetefiController extends AbstractController
         $correlationId .=  substr($rawCorrelationId, 20);
 
         $headers = array(
-            "X-Api-Key: " . $apiKey,
+            "X-Api-Key: " . $gatewayConfig['apiKey'],
             "Content-Type: application/json",
             "Correlation-Id: " . $correlationId,
         );
 
-        $ch = curl_init($apiUrl ."/orders/".$orderId);
+        $ch = curl_init($gatewayConfig['apiEndpoint'] ."/orders/".$orderId);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $resultJson = curl_exec($ch);
