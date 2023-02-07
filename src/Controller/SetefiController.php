@@ -13,8 +13,16 @@ class SetefiController extends AbstractController implements ApiAwareInterface
 {
     private $api;
 
+    public function __construct($api)
+    {
+        $this->api = $api;
+        //$this->setApi($this->api);
+    }
+
+
     public function resultPayment(Request $request)
     {
+
         $orderId = $request->query->get('orderId');
         $paymentId = $request->query->get('paymentId');
 
