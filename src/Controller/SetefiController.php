@@ -11,22 +11,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class SetefiController extends AbstractController
+class SetefiController extends AbstractController implements ApiAwareInterface
 {
     private $api;
 
-    public function __construct(CaptureAction $ca)
+    /*public function __construct(CaptureAction $ca)
     {
         dd($ca);
-    }
+    }*/
 
     public function resultPayment(Request $request)
     {
-        $orderId = $request->query->get('orderId');
-        $paymentId = $request->query->get('paymentId');
-
         $apiUrl = $this->api->getEndpoint();
         $apiKey = $this->api->getApiKey();
+
+        $orderId = $request->query->get('orderId');
+        $paymentId = $request->query->get('paymentId');
 
         $rawCorrelationId = bin2hex(openssl_random_pseudo_bytes(16));
 
@@ -66,5 +66,14 @@ class SetefiController extends AbstractController
         $resultData = json_decode($resultJson);
 
         return new JsonResponse($resultData);
+    }
+
+    public function setApi($api): void
+    {
+        if (!$api instanceof SetefiApi) {
+            throw new UnsupportedApiException('Not supported. Expected an instance of ' . SetefiApi::class);
+        }
+
+        $this->api = $api;
     }
 }
