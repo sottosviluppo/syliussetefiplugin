@@ -27,5 +27,4 @@ services:
     tags: ['controller.service_arguments']
 
   setefi.manager:
-    class: 'Filcronet\SyliusSetefiPlugin\Services\SetefiManager'
-    arguments:
+    class: Filcronet\SyliusSetefiPlugin\Services\SetefiManager
